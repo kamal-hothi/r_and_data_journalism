@@ -1,0 +1,280 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>reveal.js</title>
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/white.css">
+
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h2>R and Data Journalism in NZ</h2>
+				<p><a href="http://twitter.com/kamal_hothi" target="_blank">@kamal_hothi</a></p>
+			</section>
+
+
+			<section>
+				<h2>A brief history</h2>
+				<p> FiveThiryEight, Upshot, Guardian data blog, ProPublica....<span class="fragment">Herald Insights</span><span class="fragment">🤔</span></p>
+			</section>
+
+			<section>
+				<h2>What is data journalism</h2>
+				<p class="fragment fade-in">Data is integral to the story being told</p>
+				<p class="fragment fade-in">"Empirical social science on deadline" - FiveThirtyEight</p>
+			</section>
+
+			<section data-background="black">
+				<blockquote>
+					“You have to be like the worst tabloid newspaper in the front and the Academy of Science in the back.”
+					<span class="fragment">~ Hans Rosling</span>
+				</blockquote>
+
+			</section>
+
+			<section>
+				<h2>Why <em>data</em> journalism</h2>
+				<p>Buzzword</p>
+				<small class="fragment">Can be helpful - people might even hire you,<br/>without really knowing why</small>
+				<p class="fragment fade-in">Method - data as a source </p>
+				<p class="fragment fade-in">End product - visualisation</p>
+				<p class="fragment fade-in">Writing code as a journalist</p>
+			</section>
+
+			<section>
+				<h2>The business question</h2>
+				<p>Why do news organisations do this?</p>
+				<p class="fragment fade-in">It works*</p>
+				<p class="fragment fade-in">If done well, correctly**</p>
+				<p class="fragment fade-in">That's kind of hard</p>
+			</section>
+
+			<section>
+				<h2>What we're trying to deliver</h2>
+				<p><a href="http://insights.nzherald.co.nz/article/new-zealand-burglary-map">Burglary map</a></p>
+				<p><a href="http://insights.nzherald.co.nz/article/rising-migration-numbers-nz">Migration explainer</a></p>
+				<p><a href="http://insights.nzherald.co.nz/article/kiwisaver-investments">KiwiSaver investigation</a></p>
+
+			</section>
+
+			<section>
+				<h2>Where R fits in my workflow</h2>
+				<p>R is central to data journalism worldwide</p>
+				<ul>
+					<li>Cleaning up data</li>
+					<li>Exploratory analysis</li>
+					<li>ggplot</li>
+					<li>Sharing analysis and code</li>
+				</ul>
+			</section>
+
+			<section>
+				<h3>Example - NCEA standards data</h3>
+				<img src="lib/img/ncea_standards.png" width="80%" height="auto"></img>
+			</section>
+
+			<section>
+				<p>That looks far too ideal</p>
+				<img class="fragment fade-in" src="lib/img/standards_detail.png" width="100%" height="auto"></img>
+				<img class="fragment fade-in" src="lib/img/standards_results.png" width="100%" height="auto"></img>
+			</section>
+
+			<section>
+				<aside>
+					For people who are experts and work with data, please remember I am talking about a newsroom.
+				</aside>
+			</section>
+
+			<section>
+				<img src="lib/img/standards_code_snippet_0.png" width="100%" height="auto"></img>
+			</section>
+
+			<section>
+				<img src="lib/img/standards_code_snippet_1.png" width="100%" height="auto"></img>
+			</section>
+
+			<section>
+				<h2>R Notebook</h2>
+				<p>Storing code</p>
+				<p>Revisiting analysis</p>
+				<p>Reproducibility</p>
+				<p>R vs Excel vs pre-built charts/vis</p>
+			</section>
+
+			<section>
+				<h2>Prototyping visualisation</h2>
+				<img src="lib/img/ncea_vis_1.png" width="40%" height="auto" style="float:left"></img>
+
+				<img src="lib/img/ncea_vis_2.png" width="50%" height="auto" style="float:right"></img>
+
+				<p><a href="http://insights.nzherald.co.nz/article/whats-beneath-rising-ncea-pass-rates">NCEA visualisation</a></p>
+			</section>
+
+			<section>
+				<h3>Open work</h3>
+				<pre><code data-trim data-noescape>
+
+restructureData <- function(df, type, category) {
+  column_names <- c("area","sub-area",as.character(seq(as.Date("2009/1/1"), as.Date("2016/9/1"), "months")))
+  names(df) <- column_names
+  df <- df %>% gather('date','count', -area, -`sub-area`) %>% 
+    mutate(date = as.Date(date), count = as.numeric(count))
+  df[is.na(df)] <- 0
+  df <- df %>% mutate(type=type, category=category)
+  df
+}
+					</code></pre>
+
+				<p><a href="https://github.com/kamal-hothi/driving_offences" target="_blank">Source</a></p>
+
+			</section>
+
+			<section>
+				<h2> ggplot %>% print() </h2>
+
+				<p>Sharing analysis with the newsroom</p>
+
+				<p><a href="https://twitter.com/kamal_hothi/status/706935294470152192" target="_blank">Burglaries</a></p>
+				<p>'Here are about 13K charts*'</p>
+				<p>ggplot at FT</p>
+
+			</section>
+
+			<section>
+				<h2>Challenges</h2>
+				<p>Whose analysis is it anyway?</p>
+				<p>What did audience get out of it?</p>
+				<p>How do you know a visualisation works?</p>
+				<p>Who rejects ideas?</p>
+			</section>
+
+			<section>
+				<h4>Hazards of statistical thinking in a newsroom</h4>
+
+				<p><em>'How do you know it's true?'</em></p>
+
+				<p><em class="fragment fade-in">'We wrote a story about it'</em></p>
+			</section>
+
+			<section data-background="black">
+
+				<blockquote>
+					Let me be blunt here: If your level of numeracy is so abysmal, you aren't qualified to be a professional journalist. I know
+					it may hurt to read this, but it's the truth. Nobody who lacks a working understanding of math, statistics, and scientific
+					reasoning can properly inform the public.
+				</blockquote>
+					
+					<span class="fragment"> ~ Alberto Cairo, <a href="http://www.thefunctionalart.com/2017/03/you-arent-qualified-to-be-journalist.html"
+					    target="_blank">Source</a></span>
+
+			</section>
+
+			<section>
+				<h2>A harder problem...</h2>
+				<p>..than learning how to code or run models</p>
+
+				<p>What is frequently overlooked, in midst of data, code and visualisation is the ability to think and argue.</p>
+
+			</section>
+
+			<section>
+				<img src="lib/img/leaked_figures.png" width="60%" height="600px"></img>
+			</section>
+
+			<section>
+				<img src="lib/img/leaked_data.png" width="55%" height="650px"></img>
+			</section>
+
+			<section>
+				<p>It's hard to tell truth.</p>
+				<p class="fragment fade-in">But sometimes it's harder to not publish a lie.</p>
+				<img class="fragment" src="lib/img/trump.gif"></img>
+            </section>
+
+
+			<section data-background="black">
+				<blockquote>The problem is not the failure to cite quantitative evidence. It’s doing so in a way that can be anecdotal and ad-hoc, rather than rigorous and empirical, and failing to ask the right questions of the data.</blockquote> 
+				<span class="fragment">~Nate Silver</span>
+            </section>
+
+			
+			
+			<!--<section>
+				<h2>The difference</h2>
+				<p>It's what you do when you get it wrong</p>
+				<p class="fragment">Let's take the case of what most data journalists got wrong in States</p>	
+				<img class="fragment" src="lib/img/trump.gif"></img>
+            </section>
+
+			<section>
+				<p>If you thought communicating through visualisation was hard, try communicating probabilities</p>
+            </section>
+
+			<section data-background-image="lib/img/real_story_of_2016.png">
+
+             </section>
+
+			 <section>
+				<h3>Telling stories through data is hard</h3>
+				<blockquote>
+					“You have to be like the worst tabloid newspaper in the front and <span class="fragment highlight-current-blue">the Academy of Science in the back</span>."
+				</blockquote>
+				~ Hans Rosling
+             </section>-->
+
+		</div>
+	</div>
+
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+
+	<script>
+		// More info https://github.com/hakimel/reveal.js#configuration
+		Reveal.initialize({
+			history: true,
+			slideNumber: true,
+			progress: true,
+
+			// More info https://github.com/hakimel/reveal.js#dependencies
+			dependencies: [{
+					src: 'plugin/markdown/marked.js'
+				},
+				{
+					src: 'plugin/markdown/markdown.js'
+				},
+				{
+					src: 'plugin/notes/notes.js',
+					async: true
+				},
+				{
+					src: 'plugin/highlight/highlight.js',
+					async: true,
+					callback: function () {
+						hljs.initHighlightingOnLoad();
+					}
+				}
+			]
+		});
+	</script>
+</body>
+
+</html>
